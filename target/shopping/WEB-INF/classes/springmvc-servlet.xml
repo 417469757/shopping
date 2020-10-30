@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 2,3步已经简化为：支持json解析-->
+    <mvc:annotation-driven/>
+
+    <!-- 4.配置扫描包 ，识别该包下的所有springmvc的注解-->
+    <context:component-scan base-package="com.amei.controller" />
+
+    <!-- 5.配置视图解析 ViewResolver-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix"  value=".jsp"/>
+        <!--6.配置视图技术，默认jsp视图技术，可以不配 -->
+    </bean>
+
+    <!-- 不拦截静态资源 -->
+    <mvc:default-servlet-handler />
+
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <!-- 登录拦截-->
+        <mvc:interceptor>
+            <!-- 需要拦截哪些请求-->
+            <mvc:mapping path="/**"/>  <!--/**代表多层目录， /*代表单层目录-->
+            <!-- 不需要被拦截的请求 -->
+            <mvc:exclude-mapping path="/showMain" />
+            <mvc:exclude-mapping path="/user/login" />
+            <mvc:exclude-mapping path="/user/loginOut" />
+            <mvc:exclude-mapping path="/user/checkNewUser" />
+            <mvc:exclude-mapping path="/user/checkNewUserAndPass" />
+            <mvc:exclude-mapping path="/user/doRegistry" />
+            <mvc:exclude-mapping path="/downloadImg" />
+            <!-- 下面配置的是不拦截静态资源-->
+            <mvc:exclude-mapping path="/fonts/**" />
+            <mvc:exclude-mapping path="/css/**" />
+            <mvc:exclude-mapping path="/js/**" />
+            <mvc:exclude-mapping path="/images/**" />
+            <mvc:exclude-mapping path="/iconfont/**" />
+            <mvc:exclude-mapping path="/ads/**" />
+            <bean class="com.amei.interceptor.LoginInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!-- 配置文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8" />
+        <!--  上传文件的最大值 ，单位为b,  100M = 100* 1024*1024b -->
+        <property name="maxUploadSize"  value="104857600"/>
+    </bean>
+</beans>

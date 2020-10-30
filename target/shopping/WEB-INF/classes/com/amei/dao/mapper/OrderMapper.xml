@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.OrderDao">
+
+
+    <resultMap id="orderMapper2" type="com.amei.pojo.Order">
+        <id column="id" property="id"/>
+        <result column="no" property="no"/>
+        <association property="user" javaType="com.amei.pojo.User">
+            <id column="user_id" property="id"/>
+        </association>
+        <!-- 一对多的关系 用collection-->
+        <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+        <collection property="items" ofType="com.amei.pojo.Item">
+            <id column="id" property="id"/>
+            <result column="order_id" property="id"/>
+            <result column="num" property="num"/>
+            <association property="product" javaType="com.amei.pojo.Product">
+                <result column="product_id" property="id"/>
+                <result column="p_name" property="pName"/>
+                <result column="p_img" property="pImg"/>
+                <result column="p_price" property="pPrice"/>
+                <result column="p_description" property="pDescription"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <select id="selectByOrderNo" parameterType="String" resultMap="orderMapper2">
+        select o.id orderId,o.no,o.user_id,i.id itemId,i.product_id itemproductId, i.order_id itemorderId,i.num,p.id productId,p.p_price,p.p_name,p.p_img,p.p_description
+         from t_order  o
+         join t_item i
+         on i.order_id = o.id
+         join t_product p
+         on i.product_id = p.id
+         where o.no = #{orderNo}
+    </select>
+
+    <select id="findOrderAndItems"  resultMap="orderMapper2">
+        select o.id ,o.no,o.user_id,i.id itemId,i.product_id itemproductId, i.num,p.id productId,p.p_price,p.p_name,p.p_img,p.p_description
+         from t_order  o
+         join t_item i
+         on i.order_id = o.id
+         join t_product p
+         on i.product_id = p.id
+         where user_id = #{userId}
+    </select>
+
+    <!--    -->
+    <insert id="insert" parameterType="com.amei.pojo.Order" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+      insert into t_order(no,user_id) values(#{no},#{user.id})
+  </insert>
+
+    <resultMap id="orderMapper" type="com.amei.pojo.Order">
+        <id property="id" column="id"/>
+        <result property="no" column="no"/>
+    </resultMap>
+
+    <select id="selectByUserId" parameterType="int" resultMap="orderMapper">
+        select id,no from t_order where user_id = #{userId}
+    </select>
+
+
+</mapper>

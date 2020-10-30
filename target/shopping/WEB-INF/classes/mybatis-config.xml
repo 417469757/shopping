@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+    <!-- 配置类型别名-->
+    <typeAliases>
+        <package name="com.amei.pojo" />
+    </typeAliases>
+
+    <!-- 配置插件 -->
+    <plugins>
+        <!--
+                     如果是 pagehelper-4.jar版本  interceptor="com.github.pagehelper.PageHelper"
+                     如果是 pagehelper-5.jar版本  interceptor="com.github.pagehelper.PageInterceptor"
+        -->
+        <!-- <plugin interceptor="com.github.pagehelper.PageHelper"> -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!--
+                 配置方言  pagehelp.jar4.0版本以后可以不配
+                 mysql: limit (pageNo - 1) * pageSize,pageSize
+                 Oracle: rownum
+            -->
+            <!-- <property name="dialect" value="mysql" /> -->
+
+            <!-- 如果是 pagehelper-5.jar版本  方言要不不配置 or 配置成name="helperdialect"-->
+            <property name="helperdialect" value="mysql" />
+
+            <!-- 会将RowBounds第一个参数offset作为pageNo使用   默认false -->
+            <property name="offsetAsPageNum" value="true" />
+            <!-- 进行分页的时候 使用count语法查询数据总条数 select count(1) from 表名  -->
+            <property name="rowBoundsWithCount" value="true"/>
+            <!-- 如果pageSize的值为0表示 查询表中所有的数据
+            (即不分页,但是返回结果仍然是Page类型) -->
+            <property name="pageSizeZero" value="true" />
+
+            <!--
+                                参数合理化:
+                    true 就是进行参数合理化
+                       pageNo > totalPage   就用totalPage 即 pageNo + 1 > totalNo ? totalNo : pageNo + 1
+                       pageNo < 1           就用1    即 pageNo - 1 >= 1 ? pageNo - 1 : 1
+                    false:即返回空数据
+             -->
+            <property name="reasonable" value="true" />
+            <!--支持使用mapper接口方式 -->
+            <property name="supportMethodsArguments" value="true"/>
+            <property name="params" value="pageNum=pageNumKey;pageSize=pageSizeKey;"/>
+            <property name="returnPageInfo" value="true" />
+        </plugin>
+    </plugins>
+</configuration>

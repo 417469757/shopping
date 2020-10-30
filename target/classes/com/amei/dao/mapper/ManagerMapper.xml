@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.ManagerDao">
+
+
+    <resultMap id="managerMapper" type="com.amei.pojo.Manager">
+        <id property="id" column="id"/>
+        <result property="loginName" column="login_name" />
+        <result property="loginPass" column="login_pass" />
+    </resultMap>
+
+    <select id="selectManager"  resultMap="managerMapper">
+            select
+            id,login_name,login_pass
+            from  t_manager
+            where
+                login_name=#{loginName} and login_pass=#{loginPass}
+    </select>
+
+</mapper>

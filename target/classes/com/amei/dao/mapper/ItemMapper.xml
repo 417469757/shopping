@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.ItemDao">
+
+
+    <insert id="insert" parameterType="com.amei.pojo.Item">
+         insert into t_item(order_id,num,product_id) values (#{item.order.id},#{item.num},#{item.product.id} );
+  </insert>
+
+    <select id="findItemsByOrderId" parameterType="int" resultType="com.amei.pojo.Item">
+        select id,num,product_id from t_item where order_id = #{orderId}
+    </select>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xmlns:tx="http://www.springframework.org/schema/tx"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+                       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+                       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd
+                       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+                       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <context:component-scan base-package="com.amei">
+        <!--        在Spring-MVC.xml中只对@Controller进行扫描就可，作为一个控制器，其他的事情不做-->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+
+    </context:component-scan>
+
+    <!--    配置数据源-->
+    <!--    读取配置文件-->
+    <!--    方式1：-->
+    <!-- 2.读取properties文件 -->
+    <!-- 使用这种方式jdbc.properties配置名字注意加前缀-->
+    <!--    <context:property-placeholder location="classpath:*.properties"/>-->
+
+
+    <!--    方式2-->
+    <!--    建议使用-->
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:datasource.properties"/>
+    </bean>
+
+    <!--数据源-->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${mysql.driverClassName}"/>
+        <property name="url" value="${mysql.url}"/>
+        <property name="username" value="${mysql.username}"/>
+        <property name="password" value="${mysql.password}"/>
+        <property name="maxActive" value="${mysql.maxActive}"/>
+        <property name="initialSize" value="${mysql.initialSize}"/>
+        <property name="minIdle" value="${mysql.minIdle}"/>
+        <property name="maxIdle" value="${mysql.maxIdle}"/>
+        <property name="maxWait" value="${mysql.maxWait}"/>
+    </bean>
+
+    <!--    和mysql整合-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--   指定mybatis文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--        注入数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--   指定mapper的位置-->
+        <property name="mapperLocations" value="classpath:com/amei/dao/mapper/*.xml"/>
+    </bean>
+
+    <!--        配置扫描器-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.amei.dao"/>
+    </bean>
+
+    <!--配置事务管理器-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+<!-- 开启事物注解-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

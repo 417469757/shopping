@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.AdDao">
+
+
+    <resultMap id="adMapper" type="Ad">
+        <id column="id" property="id"/>
+        <result column="p_id" property="pId"/>
+        <result column="p_type_id" property="pTypeId"/>
+        <result column="ad_title" property="adTitle"/>
+        <result column="ad_img_url" property="adImgUrl"/>
+        <result column="ad_detail_url" property="adDetailUrl"/>
+    </resultMap>
+
+    <resultMap id="adVoMapper" type="com.amei.pojo.AdVo">
+        <id column="id" property="id"/>
+        <result column="p_id" property="pId"/>
+        <result column="p_type_id" property="pTypeId"/>
+        <result column="ad_title" property="adTitle"/>
+        <result column="ad_img_url" property="adImgUrl"/>
+        <result column="ad_detail_url" property="adDetailUrl"/>
+        <association property="productType" javaType="com.amei.pojo.ProductType">
+            <id column="p_type_id" property="id"/>
+            <result column="type_name" property="typeName"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getAllAdsByTypeId" parameterType="int" resultMap="adMapper">
+          select *  from t_ad where p_type_id = #{typeId}
+     </select>
+
+    <select id="getAdInfo" resultMap="adVoMapper">
+           select a.id,a.p_id,a.p_type_id,a.ad_title,a.ad_img_url,a.ad_detail_url,p.type_name
+           from t_ad a
+           join t_product_type p
+            on p.id = a.p_type_id
+    </select>
+
+
+</mapper>

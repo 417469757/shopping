@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.ProductTypeDao">
+
+
+    <resultMap id="typeMapper" type="com.amei.pojo.ProductType">
+        <id column="id" property="id"/>
+        <result column="type_name" property="typeName"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!--  根据商品类型状态查询所有类型  -->
+    <select id="getAllTypesByStatus" resultMap="typeMapper">
+         select
+             id,type_name,status
+         from  t_product_type
+         where status = #{status}
+    </select>
+
+    <!--  根据商品类型状态查询所有类型  -->
+    <select id="getAllTypes" resultMap="typeMapper">
+         select
+             id,type_name,status
+         from  t_product_type
+    </select>
+
+    <!--  根据商品类型状态查询所有类型  -->
+    <select id="getIdByTypeName" resultMap="typeMapper">
+         select
+             id,type_name,status
+         from  t_product_type
+         where type_name = #{proTypeName}
+    </select>
+
+
+    <insert id="addProductType">
+      insert into t_product_type
+      (type_name,status)
+      values (#{productTypeName},1)
+    </insert>
+
+
+    <update id="updateProTypeStatus">
+        update t_product_type
+        set status = 0
+        where id = #{banId}
+    </update>
+
+    <update id="updateProTypeInfo">
+        update t_product_type
+        set type_name = #{proTypeName}
+        where id = #{typeId}
+    </update>
+
+</mapper>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.ProductDao">
+
+
+    <resultMap id="productMapper" type="com.amei.pojo.Product">
+        <id column="id" property="id"/>
+        <result column="p_no" property="pNo"/>
+        <result column="p_name" property="pName"/>
+        <result column="p_type_id" property="pTypeId"/>
+        <result column="p_price" property="pPrice"/>
+        <result column="p_img" property="pImg"/>
+        <result column="p_description" property="pDescription"/>
+        <association property="productType" javaType="com.amei.pojo.ProductType">
+            <id column="p_type_id" property="id"/>
+        </association>
+    </resultMap>
+
+
+    <resultMap id="productVoMapper" type="com.amei.pojo.ProductVo">
+        <id column="id" property="id"/>
+        <result column="p_no" property="pNo"/>
+        <result column="p_name" property="pName"/>
+        <result column="p_type_id" property="pTypeId"/>
+        <result column="p_price" property="pPrice"/>
+        <result column="p_img" property="pImg"/>
+        <result column="p_status" property="pStatus"/>
+        <result column="p_description" property="pDescription"/>
+        <association property="productType" javaType="com.amei.pojo.ProductType">
+            <id column="p_type_id" property="id"/>
+            <result column="type_name" property="typeName"/>
+        </association>
+    </resultMap>
+
+    <!-- 根据参数做模糊查询 ，分页-->
+    <select id="selectByParam" resultMap="productMapper">
+        select
+        p.id,
+        p.p_no,
+        p.p_name,
+        p.p_type_id,
+        p.p_price,
+        p.p_img,
+        p.p_status,
+        p.p_description,
+        pt.type_name
+        from
+        t_product p
+        join
+        t_product_type pt
+        on p.p_type_id = pt.id
+        <where>
+            <if test="minPrice!=null">
+                p.p_price &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice!=null">
+                and p.p_price &lt;= #{maxPrice}
+            </if>
+
+            <if test="productTypeId!=null &amp;&amp; productTypeId !=-1">
+                and p.p_type_id = #{productTypeId}
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 根据参数做模糊查询 ，分页-->
+    <select id="selectAllPro" resultMap="productVoMapper">
+        select
+        p.id,
+        p.p_no,
+        p.p_name,
+        p.p_type_id,
+        p.p_price,
+        p.p_img,
+        p.p_description,
+        pt.type_name
+        from
+        t_product p
+        join
+        t_product_type pt
+        on p.p_type_id = pt.id
+    </select>
+
+    <!-- 根据商品状态做模糊查询 -->
+    <select id="selectAllProByStatus" resultMap="productVoMapper">
+        select
+        p.id,
+        p.p_no,
+        p.p_name,
+        p.p_type_id,
+        p.p_price,
+        p.p_img,
+        p.p_description,
+        pt.type_name
+        from
+        t_product p
+        join
+        t_product_type pt
+        on p.p_type_id = pt.id
+        where p_status = #{productTypeStatusEnable}
+</select>
+
+    <!-- 根据商品状态做模糊查询 -->
+    <select id="selectOneProById" resultMap="productVoMapper">
+        select
+        p.id,
+        p.p_no,
+        p.p_name,
+        p.p_type_id,
+        p.p_price,
+        p.p_img,
+        p.p_description,
+        pt.type_name
+        from
+        t_product p
+        join
+        t_product_type pt
+        on p.p_type_id = pt.id
+        where p.id = #{parseInt}
+</select>
+    <!-- 安卓===》根据商品状态做模糊查询 -->
+    <select id="selectProListByStatus" resultMap="productVoMapper">
+        select *
+        from
+        t_product
+        where p_status = #{productTypeStatusEnable}
+</select>
+    <select id="selectIdByTypeName" resultType="int">
+        select id
+        from t_product_type
+        where type_name = #{proTypeName}
+    </select>
+
+
+    <!--
+               useGeneratedKeys="true"
+                keyProperty="id"
+                 keyColumn="id"
+                  -->
+
+    <insert id="addPro" parameterType="com.amei.pojo.Product">
+        insert into t_product
+        (p_name,p_no,p_price,p_type_id,p_description,p_img)
+        values (#{productName},2222,#{productPrice},#{productTypeId},#{productDes},#{imgPath})
+    </insert>
+
+    <update id="updateProInfo">
+        update t_product
+        set p_name = #{proName},p_price=#{proPrice},p_type_id=#{proType}
+        where p_no = #{proNo}
+    </update>
+
+    <update id="updateProStatus">
+        update t_product
+        set p_status = 0
+        where id = #{banId}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 2,3步已经简化为-->
+    <mvc:annotation-driven/>
+
+    <!-- 4.配置扫描包 ，识别该包下的所有springmvc的注解-->
+    <context:component-scan base-package="com.amei.controller" />
+
+    <!-- 5.配置视图解析 ViewResolver-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix"  value=".jsp"/>
+        <!--6.配置视图技术，默认jsp视图技术，可以不配 -->
+    </bean>
+
+    <!-- 不拦截静态资源 -->
+    <mvc:default-servlet-handler />
+
+
+
+</beans>

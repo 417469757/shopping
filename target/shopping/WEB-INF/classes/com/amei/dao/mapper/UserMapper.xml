@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.amei.dao.UserDao">
+
+
+    <resultMap id="userMapper" type="com.amei.pojo.User">
+        <id column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="login_name" property="loginName" />
+        <result column="login_pass" property="loginPass" />
+        <result column="phone" property="phone" />
+        <result column="address" property="address" />
+        <result column="status" property="status" />
+        <result column="head" property="head" />
+        <result column="images" property="images" />
+        <result column="register_date" property="registerDate" />
+    </resultMap>
+
+    <select id="selectByNameAndPass" resultMap="userMapper">
+            select
+            id,username,login_name,login_pass,phone,address,status,head,images,register_date
+            from  t_user
+            where
+                login_name=#{loginName} and login_pass=#{loginPass}
+    </select>
+    <select id="selectByName"  resultMap="userMapper">
+            select
+            id,username,login_name,login_pass,phone,address,status,head,images,register_date
+            from  t_user
+            where
+                login_name=#{loginName}
+    </select>
+
+    <select id="selectUserByName" resultMap="userMapper">
+            select
+            id,username,login_name,login_pass,phone,address,status,head,images,register_date
+            from  t_user
+            where
+                login_name=#{loginName}
+    </select>
+
+
+    <select id="findUser"  resultMap="userMapper">
+            select
+            id,username,login_name,login_pass,phone,address,status,head,images,register_date
+            from  t_user
+            where
+                login_name=#{loginName}
+    </select>
+
+    <select id="isExistUser" resultMap="userMapper">
+             select
+            id,username,login_name,login_pass,phone,address,status,head,images,register_date
+            from  t_user
+            where
+                login_name=#{login_name}
+    </select>
+
+
+    <!--  根据商品类型状态查询所有类型  -->
+    <insert id="saveUser" parameterType="com.amei.pojo.User" useGeneratedKeys="true"
+            keyProperty="id" keyColumn="id">
+         insert into
+         t_user(username,login_name,login_pass,phone,address,status,register_date)
+         values (#{username},#{loginName},#{loginPass},#{phone},#{address},0,now())
+    </insert>
+
+    <update id="updatePass" >
+         update t_user
+         set  login_pass=#{newPass}
+         where id=#{id}
+    </update>
+
+    <update id="updateUserInfoById" parameterType="com.amei.pojo.User">
+        update t_user set phone=#{phone} ,address=#{address} where id=#{id}
+    </update>
+
+
+    <select id="selectById" resultMap="userMapper">
+           select * from t_user
+           where id=#{id}
+     </select>
+
+
+    <update id="updateHeadByUserId">
+        update t_user set head=#{imgPath} where id=#{userId}
+    </update>
+
+</mapper>
